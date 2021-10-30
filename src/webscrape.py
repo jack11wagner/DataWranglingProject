@@ -16,8 +16,14 @@ def getStatsFromScrape(category):
     html = urlopen(url)
     soup = BeautifulSoup(html, features='html.parser')
     headers = [header.getText() for header in soup.findAll('tr', limit=2)[0].findAll('th')]
+
+    if headers[1] != 'Player':
+        headers = [header.getText() for header in soup.findAll('tr', limit=2)[1].findAll('th')]
+        rows = soup.findAll('tr')[2:]
+    else:
+        rows = soup.findAll('tr')[1:]
     headers = headers[1:]
-    rows = soup.findAll('tr')[1:]
+    
     player_stats = [[td.getText() for td in rows[i].findAll('td')]
                     for i in range(len(rows))]
     stats = pd.DataFrame(player_stats, columns=headers)
@@ -25,12 +31,12 @@ def getStatsFromScrape(category):
 
 
 def main():
-    # getStatsFromScrape('rushing')
 
-    passing_df, receiving_df = getStatsFromScrape('passing'), getStatsFromScrape('receiving')
+    passing_df, receiving_df, rushing_df = getStatsFromScrape('passing'), getStatsFromScrape('receiving'), getStatsFromScrape('rushing')
 
-    passing_df.to_csv(path='stats/passing2020.csv', index=False)
-    receiving_df.to_csv(path='stats/receiving2020.csv', index=False)
+    passing_df.to_csv('stats/passing2020.csv', index=False)
+    receiving_df.to_csv('stats/receiving2020.csv', index=False)
+    rushing_df.to_csv('stats/rushing2020.csv', index=False)
 
 
 if __name__ == "__main__":
