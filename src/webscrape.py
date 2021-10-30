@@ -5,21 +5,6 @@ import pandas as pd
 
 # 2016-2020 NFL Stats (Past 5 years)
 
-
-# Only gets single DF at a time
-def oldGetStatsFromScrape(category):
-    url = 'https://www.pro-football-reference.com/years/2020/{}.htm'.format(category)
-    html = urlopen(url)
-    soup = BeautifulSoup(html, features='html.parser')
-    headers = [header.getText() for header in soup.findAll('tr', limit=2)[0].findAll('th')]
-    headers = headers[1:]
-    rows = soup.findAll('tr')[1:]
-    player_stats = [[td.getText() for td in rows[i].findAll('td')]
-                    for i in range(len(rows))]
-    stats = pd.DataFrame(player_stats, columns=headers)
-    return stats
-
-
 def getStatsFromScrape(year, category_list):
     """
 
