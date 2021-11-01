@@ -13,7 +13,7 @@ def getStatsFromScrape(year, category_list):
     :return:
     """
     for category in category_list:
-        url = 'https://www.pro-football-reference.com/years/{}/{}.htm'.format(year, category)
+        url = ''
         html = urlopen(url)
         soup = BeautifulSoup(html, features='html.parser')
         headers = [header.getText() for header in soup.findAll('tr', limit=2)[0].findAll('th')]
