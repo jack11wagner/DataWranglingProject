@@ -3,20 +3,30 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import pandas as pd
 
-# 2020 NFL Stats ONLY
-
-passing_url = 'https://www.pro-football-reference.com/years/2020/passing.htm'
+major_league_career_leaders = 'https://www.retrosheet.org/boxesetc/M/XCL_ML.htm'
 rushing_url = 'https://www.pro-football-reference.com/years/2020/rushing.htm'
 receiving_url = 'https://www.pro-football-reference.com/years/2020/receiving.htm'
 defense_url = 'https://www.pro-football-reference.com/years/2020/defense.htm'
 
 
-def getStatsFromScrape(category):
-    url = 'https://www.pro-football-reference.com/years/2020/{}.htm'.format(category)
+def getStatsFromScrape(url):
     html = urlopen(url)
     soup = BeautifulSoup(html, features='html.parser')
-    headers = [header.getText() for header in soup.findAll('tr', limit=2)[0].findAll('th')]
+    text = [words.getText() for words in soup.find_all('pre')]
+    games_leaders = str(text[2])
+    stats = games_leaders.split("\n")
+    headers = stats[1].split("  ")
+    new_headers = []
+    for word in headers:
+        if word != '':
+            word = word.strip()
+            new_headers.append(word)
 
+        if word == 'G'
+
+    print(new_headers)
+    """
+  
     if headers[1] != 'Player':
         headers = [header.getText() for header in soup.findAll('tr', limit=2)[1].findAll('th')]
         rows = soup.findAll('tr')[2:]
@@ -28,15 +38,13 @@ def getStatsFromScrape(category):
                     for i in range(len(rows))]
     stats = pd.DataFrame(player_stats, columns=headers)
     return stats
-
+    """
 
 def main():
 
-    passing_df, receiving_df, rushing_df = getStatsFromScrape('passing'), getStatsFromScrape('receiving'), getStatsFromScrape('rushing')
+    batting_leaders = getStatsFromScrape(major_league_career_leaders)
 
-    passing_df.to_csv('stats/passing2020.csv', index=False)
-    receiving_df.to_csv('stats/receiving2020.csv', index=False)
-    rushing_df.to_csv('stats/rushing2020.csv', index=False)
+    batting_leaders.to_csv('stats/careerleaders.csv', index=False)
 
 
 if __name__ == "__main__":
