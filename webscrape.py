@@ -6,39 +6,6 @@ import pandas as pd
 major_league_career_leaders = 'https://www.retrosheet.org/boxesetc/M/XCL_ML.htm'
 
 
-def getStatsFromScrape(url):
-    html = urlopen(url)
-    soup = BeautifulSoup(html, features='html.parser')
-    text = [words.getText() for words in soup.find_all('pre')]
-    games_leaders = str(text[2])
-    stats = games_leaders.split("\n")
-    headers = stats[1].split("  ")
-    new_headers = []
-    for word in headers:
-        if word != '':
-            word = word.strip()
-            new_headers.append(word)
-
-        if word == 'G':
-            pass
-
-    print(new_headers)
-    """
-  
-    if headers[1] != 'Player':
-        headers = [header.getText() for header in soup.findAll('tr', limit=2)[1].findAll('th')]
-        rows = soup.findAll('tr')[2:]
-    else:
-        rows = soup.findAll('tr')[1:]
-    headers = headers[1:]
-    
-    player_stats = [[td.getText() for td in rows[i].findAll('td')]
-                    for i in range(len(rows))]
-    stats = pd.DataFrame(player_stats, columns=headers)
-    return stats
-    """
-
-
 def getAllCategories(url):
     html = urlopen(url)
     soup = BeautifulSoup(html, features='html.parser')
