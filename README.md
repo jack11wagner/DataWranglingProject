@@ -1,4 +1,4 @@
-# DataWranglingProject - BASEBALL STATISTICS
+# DataWranglingProject - Baseball Statistics
 Baseball Statistics
 
      The information used here was obtained free of
