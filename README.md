@@ -1,5 +1,5 @@
 # DataWranglingProject - BASEBALL STATISTICS
-BASEBALL STATISTICS
+Baseball Statistics
 
      The information used here was obtained free of
      charge from and is copyrighted by Retrosheet.  Interested
