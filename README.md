@@ -3,7 +3,7 @@
 Project Description: 
      WebScraping data from Retrosheet.com
      
-     + All Time Career Leaders
+ - All Time Career Leaders
      
      
 
