@@ -36,12 +36,15 @@ def getBattingStatsFromScrape(url, category_to_scrape):
     stats = text[category_lookup[category_to_scrape]].split('\n')[2:-1]
 
     def getPlayerName(line):
+        """
+        Helper function which uses string slicing to extract out the player name and strip
+        any trailing/leading whitespace
+        """
         return line[:23].strip()
 
     # the 23 represents the number of characters of padding between player name and stats for each header
     stats_list = []
     for line in stats:
-        # print(line)
         player_stats = [getPlayerName(line)]
         cleaned_line = line[23:]
         column_stats = cleaned_line.split()[:1]
@@ -49,10 +52,9 @@ def getBattingStatsFromScrape(url, category_to_scrape):
             player_stats.append(stat)
         stats_list.append(player_stats)
     stats_df = pd.DataFrame(stats_list, columns=headers)
-    print(stats_df)
 
     category_to_scrape = category_to_scrape[:-1]
-    stats_df.to_csv('battingstats/{}.csv'.format(category_to_scrape), index=False)
+    stats_df.to_csv('battingstats/careerleaders/{}.csv'.format(category_to_scrape), index=False)
 
 
 def getPitchingStatsFromScrape(url, category_to_scrape):
@@ -92,26 +94,17 @@ def getPitchingStatsFromScrape(url, category_to_scrape):
             player_stats.append(stat)
         stats_list.append(player_stats)
     stats_df = pd.DataFrame(stats_list, columns=headers)
-    print(stats_df)
 
-    category_to_scrape = category_to_scrape[:-1]
-    stats_df.to_csv('pitchingstats/{}.csv'.format(category_to_scrape), index=False)
-
-    # print(category_lookup)
-    # print(headers)
-
+    stats_df.to_csv('pitchingstats/careerleaders/{}.csv'.format(category_to_scrape[:-1]), index=False)
 
 def main():
     category_list = getAllCategories(major_league_career_leaders)
     batting_categories = category_list[:22]
     pitching_categories = category_list[23:]
-    print(category_list)
 
     for bat_category in batting_categories:
-        print(bat_category)
         getBattingStatsFromScrape(major_league_career_leaders, bat_category)
     for pitch_category in pitching_categories:
-        print(pitch_category)
         getPitchingStatsFromScrape(major_league_career_leaders, pitch_category)
 
 

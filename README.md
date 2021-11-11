@@ -1,9 +1,17 @@
 # DataWranglingProject - Baseball Statistics
 
-Project Description: 
-     WebScraping data from Retrosheet.com
+**Project Description:**
      
- - All Time Career Leaders
+-WebScraping data from Retrosheet.com
+
+-Performing data cleaning and adding new columns to create new databases with scraped data
+
+-Categories:
+
+     -All-Time Career Leaders
+     -Top Individual Performances
+
+---
      
      
 
