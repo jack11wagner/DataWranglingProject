@@ -97,6 +97,7 @@ def getPitchingStatsFromScrape(url, category_to_scrape):
 
     stats_df.to_csv('pitchingstats/careerleaders/{}.csv'.format(category_to_scrape[:-1]), index=False)
 
+
 def main():
     category_list = getAllCategories(major_league_career_leaders)
     batting_categories = category_list[:22]
