@@ -100,13 +100,10 @@ def getCycleStatsFromScrape(url, category_to_scrape):
             cat_index += 1
 
     raw_headers = text[category_lookup[category_to_scrape]].split('\n')[2]
-    #print(raw_headers)
     headers = [header.strip() for header in raw_headers[12:].split()]
     headers.insert(0, 'Player Name')
     headers = headers[:3]
-    #print(headers)
     stats = text[category_lookup[category_to_scrape]].split('\n')[3:-1]
-    #print(stats)
 
     def getPlayerName(line):
         return line[:20].strip()
@@ -115,9 +112,7 @@ def getCycleStatsFromScrape(url, category_to_scrape):
     for line in stats:
         player_stats = [getPlayerName(line)]
         cleaned_line = line[20:]
-        #print(cleaned_line)
         first_stat = cleaned_line[:6][:-1].strip()
-        #print(first_stat)
         second_stat = cleaned_line[6:22].strip()
 
         improved_second_stat = ''
@@ -133,10 +128,8 @@ def getCycleStatsFromScrape(url, category_to_scrape):
 
         player_stats.append(first_stat)
         player_stats.append(improved_second_stat)
-        #print(improved_second_stat)
         stats_list.append(player_stats)
 
-    #print(stats_list)
     stats_df = pd.DataFrame(stats_list, columns=headers)
     category_to_scrape = category_to_scrape[:-1]
     stats_df.to_csv('battingstats/singlegameleaders/{}.csv'.format(category_to_scrape), index=False)
@@ -149,25 +142,19 @@ def getBattingStatsFromScrape(url, category_to_scrape):
     text = [words.getText() for words in soup.find_all('pre')]
     text = text[3:20]
     text.remove(text[1])
-    text.remove(text[13])
     category_lookup = {}
     cat_index = 0
-    for i in range(len(text)):
-        if i == 14:
-            continue
-        elif text[i].startswith('\n'):
-            text[i] = text[i].split('\n')[1]
-            category_lookup[text[i]] = cat_index
+    for category in text:
+        if category.startswith('\n'):
+            category = category.split('\n')[1]
+            category_lookup[category] = cat_index
             cat_index += 1
 
     raw_headers = text[category_lookup[category_to_scrape]].split('\n')[2]
-    #print(raw_headers)
     headers = [header.strip() for header in raw_headers[12:].split()]
     headers.insert(0, 'Player Name')
-    headers = headers[:3]
-    #print(headers)
+    headers = headers[:4]
     stats = text[category_lookup[category_to_scrape]].split('\n')[3:-1]
-    #print(stats)
 
     def getPlayerName(line):
         return line[:20].strip()
@@ -176,17 +163,26 @@ def getBattingStatsFromScrape(url, category_to_scrape):
     for line in stats:
         player_stats = [getPlayerName(line)]
         cleaned_line = line[20:]
-        #print(cleaned_line)
         first_stat = cleaned_line[:7].strip()[:-1].strip()
-        #print(first_stat)
         second_stat = cleaned_line[7:12].strip()
+        third_stat = cleaned_line[12:28].strip()
+
+        improved_third_stat = ''
+        for character in third_stat:
+            if character == '(':
+                break
+
+            elif character.isdigit() is False and character != '-' and character != ' ':
+                break
+
+            elif character != ' ':
+                improved_third_stat += character
 
         player_stats.append(first_stat)
         player_stats.append(second_stat)
-        #print(second_stat)
+        player_stats.append(improved_third_stat)
         stats_list.append(player_stats)
 
-    #print(stats_list)
     stats_df = pd.DataFrame(stats_list, columns=headers)
     category_to_scrape = category_to_scrape[:-1]
     stats_df.to_csv('battingstats/singlegameleaders/{}.csv'.format(category_to_scrape), index=False)
@@ -236,14 +232,10 @@ def getPitchingStatsFromScrape(url, category_to_scrape):
 def main():
     category_list = getAllCategories(major_league_top_individual_performances)
     batting_categories = category_list[:15]
-    print(batting_categories)
     pitching_categories = category_list[15:]
-    #getHitStreakStatsFromScrape(major_league_top_individual_performances, batting_categories[0])
-    #getCycleStatsFromScrape(major_league_top_individual_performances, batting_categories[1])
-
+    getHitStreakStatsFromScrape(major_league_top_individual_performances, batting_categories[0])
+    getCycleStatsFromScrape(major_league_top_individual_performances, batting_categories[1])
     for i in range (2, len(batting_categories)):
-        if i == 14:
-            continue
         getBattingStatsFromScrape(major_league_top_individual_performances, batting_categories[i])
     """
     for pitch_category in pitching_categories:
