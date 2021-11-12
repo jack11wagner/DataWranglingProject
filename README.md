@@ -2,9 +2,9 @@
 
 **Project Description:**
      
-- WebScraping data from Retrosheet.com
+- WebScraping data from Retrosheet.com using Beautiful Soup
 
-- Performing data cleaning and adding new columns to create new databases with scraped data
+- Performing data cleaning and adding new columns to create a database with scraped data
 
 - Categories:
 
@@ -17,6 +17,7 @@
 
     - Some dates in Top Individual Performance tables had unneccessary whitespace in the string, which was cleaned up
     - Some dates also had numbers in parentheses and asterisks at the end of the string that were removed
+    - Some data from all time stats had random 'i' characters amongst data
 
 ---     
 
