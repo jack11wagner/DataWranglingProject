@@ -12,8 +12,15 @@
      -Top Individual Performances
 
 ---
-     
-     
+
+-Data Cleaning Cases:
+
+    -Some dates in Top Individual Performance tables had unneccessary whitespace in the string, which was cleaned up
+    -Some dates also had numbers in parentheses and asterisks at the end of the string that were removed
+
+---     
+
+-Copyright Message:
 
      + The information used here was obtained free of
      charge from and is copyrighted by Retrosheet.  Interested
