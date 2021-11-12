@@ -4,8 +4,8 @@ import mysql.connector
 
 
 def connect_to_SQL():
-    # load_dotenv()
-    conn = mysql.connector.connect(user='jacksonw', password='3083Creek',
+    load_dotenv()
+    conn = mysql.connector.connect(user=os.getenv("USERNAME"), password=os.getenv("PASSWORD"),
                                    host='127.0.0.1')
     cursor = conn.cursor()
     return cursor, conn
