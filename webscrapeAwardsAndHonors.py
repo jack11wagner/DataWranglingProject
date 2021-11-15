@@ -42,6 +42,7 @@ def getStreakStatsFromScrape(url, category_to_scrape):
         stats_list.append([first_stat, second_stat])
 
     stats_df = pd.DataFrame(stats_list, columns=headers)
+    stats_df = stats_df[['Player Name', 'Year']]
     stats_df.to_csv('awards/{}.csv'.format(category_to_scrape), index=False)
 
 
