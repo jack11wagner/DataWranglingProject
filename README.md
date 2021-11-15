@@ -10,6 +10,7 @@
 
      - All-Time Career Leaders
      - Top Individual Performances
+     - Awards & Honors
 
 ---
 

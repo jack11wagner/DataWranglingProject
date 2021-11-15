@@ -16,8 +16,8 @@ def getAllCategories(url):
         category_list.append(category)
     return category_list
 
-def getStreakStatsFromScrape(url, category_to_scrape):
 
+def getStreakStatsFromScrape(url, category_to_scrape):
     html = urlopen(url)
     soup = BeautifulSoup(html, features='html.parser')
     text = [words.getText() for words in soup.find_all('pre')]
@@ -43,10 +43,12 @@ def getStreakStatsFromScrape(url, category_to_scrape):
     stats_df = pd.DataFrame(stats_list, columns=headers)
     stats_df.to_csv('awards/{}.csv'.format(category_to_scrape), index=False)
 
+
 def main():
     category_list = getAllCategories(major_league_awards_and_honors)
     getStreakStatsFromScrape(major_league_awards_and_honors, category_list[0])
     print(category_list)
+
 
 if __name__ == "__main__":
     main()
