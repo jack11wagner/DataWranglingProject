@@ -190,7 +190,7 @@ def getStatsFromScrape(url, category_to_scrape):
         stats_list.append(player_stats)
 
     stats_df = pd.DataFrame(stats_list, columns=headers)
-    
+
     if category_lookup[category_to_scrape] <= 15:
         category_to_scrape = category_to_scrape[:-1]
         stats_df.to_csv('battingstats/singlegameleaders/{}.csv'.format(category_to_scrape), index=False)
