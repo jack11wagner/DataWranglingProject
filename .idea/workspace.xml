@@ -2,7 +2,52 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="760ddeaf-27cd-4d66-b5e6-1ea707cd8ff5" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.env" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/webscrapeAwardsAndHonors.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/battingstats/careerleaders/At-Bats.csv" beforeDir="false" afterPath="$PROJECT_DIR$/battingstats/careerleaders/At-Bats.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/battingstats/careerleaders/BFW.csv" beforeDir="false" afterPath="$PROJECT_DIR$/battingstats/careerleaders/BFW.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/battingstats/careerleaders/Batting Average.csv" beforeDir="false" afterPath="$PROJECT_DIR$/battingstats/careerleaders/Batting Average.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/battingstats/careerleaders/Caught Stealing.csv" beforeDir="false" afterPath="$PROJECT_DIR$/battingstats/careerleaders/Caught Stealing.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/battingstats/careerleaders/Doubles.csv" beforeDir="false" afterPath="$PROJECT_DIR$/battingstats/careerleaders/Doubles.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/battingstats/careerleaders/Games.csv" beforeDir="false" afterPath="$PROJECT_DIR$/battingstats/careerleaders/Games.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/battingstats/careerleaders/Grounded into Double-Plays.csv" beforeDir="false" afterPath="$PROJECT_DIR$/battingstats/careerleaders/Grounded into Double-Plays.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/battingstats/careerleaders/Hit By Pitch.csv" beforeDir="false" afterPath="$PROJECT_DIR$/battingstats/careerleaders/Hit By Pitch.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/battingstats/careerleaders/Hits.csv" beforeDir="false" afterPath="$PROJECT_DIR$/battingstats/careerleaders/Hits.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/battingstats/careerleaders/Home Runs.csv" beforeDir="false" afterPath="$PROJECT_DIR$/battingstats/careerleaders/Home Runs.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/battingstats/careerleaders/Intentional Walks.csv" beforeDir="false" afterPath="$PROJECT_DIR$/battingstats/careerleaders/Intentional Walks.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/battingstats/careerleaders/On-Base Percentage.csv" beforeDir="false" afterPath="$PROJECT_DIR$/battingstats/careerleaders/On-Base Percentage.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/battingstats/careerleaders/Plate Appearances.csv" beforeDir="false" afterPath="$PROJECT_DIR$/battingstats/careerleaders/Plate Appearances.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/battingstats/careerleaders/RBIs.csv" beforeDir="false" afterPath="$PROJECT_DIR$/battingstats/careerleaders/RBIs.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/battingstats/careerleaders/Runs.csv" beforeDir="false" afterPath="$PROJECT_DIR$/battingstats/careerleaders/Runs.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/battingstats/careerleaders/Sacrifice Flies.csv" beforeDir="false" afterPath="$PROJECT_DIR$/battingstats/careerleaders/Sacrifice Flies.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/battingstats/careerleaders/Sacrifice Hits.csv" beforeDir="false" afterPath="$PROJECT_DIR$/battingstats/careerleaders/Sacrifice Hits.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/battingstats/careerleaders/Slugging Percentage.csv" beforeDir="false" afterPath="$PROJECT_DIR$/battingstats/careerleaders/Slugging Percentage.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/battingstats/careerleaders/Stolen Bases.csv" beforeDir="false" afterPath="$PROJECT_DIR$/battingstats/careerleaders/Stolen Bases.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/battingstats/careerleaders/Strikeouts.csv" beforeDir="false" afterPath="$PROJECT_DIR$/battingstats/careerleaders/Strikeouts.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/battingstats/careerleaders/Triples.csv" beforeDir="false" afterPath="$PROJECT_DIR$/battingstats/careerleaders/Triples.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/battingstats/careerleaders/Walks.csv" beforeDir="false" afterPath="$PROJECT_DIR$/battingstats/careerleaders/Walks.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pitchingstats/careerleaders/Balks.csv" beforeDir="false" afterPath="$PROJECT_DIR$/pitchingstats/careerleaders/Balks.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pitchingstats/careerleaders/Complete Games.csv" beforeDir="false" afterPath="$PROJECT_DIR$/pitchingstats/careerleaders/Complete Games.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pitchingstats/careerleaders/Earned Run Average.csv" beforeDir="false" afterPath="$PROJECT_DIR$/pitchingstats/careerleaders/Earned Run Average.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pitchingstats/careerleaders/Earned Runs.csv" beforeDir="false" afterPath="$PROJECT_DIR$/pitchingstats/careerleaders/Earned Runs.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pitchingstats/careerleaders/Games Finished.csv" beforeDir="false" afterPath="$PROJECT_DIR$/pitchingstats/careerleaders/Games Finished.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pitchingstats/careerleaders/Games Started.csv" beforeDir="false" afterPath="$PROJECT_DIR$/pitchingstats/careerleaders/Games Started.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pitchingstats/careerleaders/Hit By Pitch.csv" beforeDir="false" afterPath="$PROJECT_DIR$/pitchingstats/careerleaders/Hit By Pitch.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pitchingstats/careerleaders/Hits.csv" beforeDir="false" afterPath="$PROJECT_DIR$/pitchingstats/careerleaders/Hits.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pitchingstats/careerleaders/Home Runs.csv" beforeDir="false" afterPath="$PROJECT_DIR$/pitchingstats/careerleaders/Home Runs.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pitchingstats/careerleaders/Innings Pitched.csv" beforeDir="false" afterPath="$PROJECT_DIR$/pitchingstats/careerleaders/Innings Pitched.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pitchingstats/careerleaders/Intentional Walks.csv" beforeDir="false" afterPath="$PROJECT_DIR$/pitchingstats/careerleaders/Intentional Walks.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pitchingstats/careerleaders/Losses.csv" beforeDir="false" afterPath="$PROJECT_DIR$/pitchingstats/careerleaders/Losses.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pitchingstats/careerleaders/PW.csv" beforeDir="false" afterPath="$PROJECT_DIR$/pitchingstats/careerleaders/PW.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pitchingstats/careerleaders/Runs.csv" beforeDir="false" afterPath="$PROJECT_DIR$/pitchingstats/careerleaders/Runs.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pitchingstats/careerleaders/Saves.csv" beforeDir="false" afterPath="$PROJECT_DIR$/pitchingstats/careerleaders/Saves.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pitchingstats/careerleaders/Shutouts.csv" beforeDir="false" afterPath="$PROJECT_DIR$/pitchingstats/careerleaders/Shutouts.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pitchingstats/careerleaders/Strikeouts.csv" beforeDir="false" afterPath="$PROJECT_DIR$/pitchingstats/careerleaders/Strikeouts.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pitchingstats/careerleaders/Walks.csv" beforeDir="false" afterPath="$PROJECT_DIR$/pitchingstats/careerleaders/Walks.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pitchingstats/careerleaders/Wild Pitches.csv" beforeDir="false" afterPath="$PROJECT_DIR$/pitchingstats/careerleaders/Wild Pitches.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pitchingstats/careerleaders/Wins.csv" beforeDir="false" afterPath="$PROJECT_DIR$/pitchingstats/careerleaders/Wins.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webscrapeCareerLeaders.py" beforeDir="false" afterPath="$PROJECT_DIR$/webscrapeCareerLeaders.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/webscrapeTopIndividualPerf.py" beforeDir="false" afterPath="$PROJECT_DIR$/webscrapeTopIndividualPerf.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -41,7 +86,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="vcs.Git" />
   </component>
-  <component name="RunManager" selected="Python.webscrapeTopIndividualPerf">
+  <component name="RunManager" selected="Python.webscrapeCareerLeaders">
     <configuration name="webscrape (1)" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="DataWranglingProject" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -78,6 +123,27 @@
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/webscrape.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="webscrapeAwardsAndHonors" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="DataWranglingProject" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/webscrapeAwardsAndHonors.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
       <option name="REDIRECT_INPUT" value="false" />
@@ -128,8 +194,9 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.webscrapeTopIndividualPerf" />
         <item itemvalue="Python.webscrapeCareerLeaders" />
+        <item itemvalue="Python.webscrapeAwardsAndHonors" />
+        <item itemvalue="Python.webscrapeTopIndividualPerf" />
       </list>
     </recent_temporary>
   </component>
@@ -145,6 +212,7 @@
     <servers />
   </component>
   <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.env" />
     <option featureType="com.intellij.fileTypeFactory" implementationName="*.csv" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -166,19 +234,19 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/webscrapeAwardsAndHonors.py</url>
+          <line>47</line>
+          <option name="timeStamp" value="38" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/webscrapeCareerLeaders.py</url>
-          <line>31</line>
-          <option name="timeStamp" value="16" />
+          <line>143</line>
+          <option name="timeStamp" value="54" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/webscrapeTopIndividualPerf.py</url>
-          <line>253</line>
-          <option name="timeStamp" value="35" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/webscrapeTopIndividualPerf.py</url>
-          <line>152</line>
-          <option name="timeStamp" value="36" />
+          <url>file://$PROJECT_DIR$/webscrapeCareerLeaders.py</url>
+          <line>85</line>
+          <option name="timeStamp" value="55" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
