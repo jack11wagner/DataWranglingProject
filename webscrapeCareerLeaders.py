@@ -142,6 +142,8 @@ def main():
     for pitch_category in pitching_categories:
         getPitchingStatsFromScrape(major_league_career_leaders, pitch_category)
 
+    print('All Time Leaders Data Loaded...')
+
 
 if __name__ == "__main__":
     main()

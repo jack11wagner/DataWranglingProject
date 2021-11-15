@@ -217,6 +217,7 @@ def main():
     for i in range(1, len(pitching_categories)):
         getStatsFromScrape(major_league_top_individual_performances, pitching_categories[i])
 
+    print('Top Individual Performances Data Loaded...')
 
 if __name__ == "__main__":
     main()

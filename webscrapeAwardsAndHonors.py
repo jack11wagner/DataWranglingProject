@@ -1,4 +1,5 @@
 # webscrape file
+import os
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import pandas as pd
@@ -48,6 +49,7 @@ def main():
     category_list = getAllCategories(major_league_awards_and_honors)
     getStreakStatsFromScrape(major_league_awards_and_honors, category_list[0])
     print(category_list)
+    print('Awards & Honors Data Loaded...')
 
 
 if __name__ == "__main__":
