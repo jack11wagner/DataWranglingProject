@@ -28,28 +28,11 @@ def createDBFields():
         'PlayerID': 'VARCHAR(100)',
         'PlayerName': 'VARCHAR(100)'
     }
-    return name_fields
-
-
-def getPlayerNamesDictionary(directories):
-    playerNameDictionary = {}
-    for file in directories:
-
-        with open(file) as stat_file:
-            stat_file.readline()
-            stat_file = csv.reader(stat_file)
-            for line in stat_file:
-                playerName = line[0]
-                playerID = createID(playerName, playerNameDictionary)
-                playerNameDictionary[playerID] = playerName
-    return playerNameDictionary
-
-
-def createID(playerName, name_dict):
-    id_num = 1
-    playerName = playerName.lower().split()
-    playerID ='' + playerName[0][0] + playerName[-1].title() + str(id_num)
-    return playerID
+    player_bio_fields = {
+        'PlayerID': 'VARCHAR(100)',
+        'PlayerName': 'VARCHAR(100)'
+    }
+    return name_fields, player_bio_fields
 
 
 def loadBaseballData():
@@ -65,21 +48,35 @@ def getDataDirectories(folder_name, directories):
                 directories.append(os.path.join(root, file))
 
 
+def getPlayerNamesDictionary(filename):
+    playerNameDictionary = {}
+    with open(filename) as file:
+        file.readline()
+        player_info = csv.reader(file)
+        for line in player_info:
+            line = [element.strip('"') for element in line]
+            playerID, playerName = line[0], line[3] + ' ' + line[1]
+            playerNameDictionary[playerID] = playerName
+
+    print(playerNameDictionary)
+
+
+def getHallOfFamePlayers():
+    pass
+
+
 def main():
-    loadBaseballData()
-    cursor, conn = connect_to_SQL()
-    createBaseballDB(cursor, "baseballStats_db")
-    name_fields = createDBFields()
+    # loadBaseballData()
+    # cursor, conn = connect_to_SQL()
+    # createBaseballDB(cursor, "baseballStats_db")
+    # name_fields = createDBFields()
     directories = []
     getDataDirectories('battingstats', directories)
     getDataDirectories('pitchingstats', directories)
     getDataDirectories('awards', directories)
 
-    createTable(cursor, name_fields, 'Player Names')
-    getPlayerNamesDictionary(directories)
-
-
-
+    # createTable(cursor, name_fields, 'Player Names')
+    getPlayerNamesDictionary('playerinformation/playerBios.csv')
 
 
 if __name__ == '__main__':
