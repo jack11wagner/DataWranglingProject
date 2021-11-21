@@ -19,6 +19,8 @@
     - Some dates in Top Individual Performance tables had unneccessary whitespace in the string, which was cleaned up
     - Some dates also had numbers in parentheses and asterisks at the end of the string that were removed
     - Some data from all time stats had random 'i' characters amongst data
+    - In Hall of Fame Records, found instances of non players in the hall of fame
+    - Found issues with matching up player names, some tables used nicknames while others used full names to identify players
 
 ---     
 

@@ -20,7 +20,17 @@ def createBaseballDB(cursor, db_name):
 def createTable(cursor, fields, table_name):
     cursor.execute('DROP TABLE IF EXISTS {}'.format(table_name))
     columns = ','.join(['{} {}'.format(key, fields[key]) for key in fields.keys()])
-    cursor.execute('CREATE TABLE {}'.format(columns))
+    cursor.execute('CREATE TABLE {} ({})'.format(table_name, columns))
+
+
+def load_Player_NamesTable(cursor, player_names_dict, table_name):
+    for player in player_names_dict:
+        cursor.execute('INSERT INTO {} VALUES ("{}","{}")'.format(table_name, player_names_dict[player], player))
+
+
+def load_HOF_Table(cursor, hall_of_fame_dict, table_name):
+    for player in hall_of_fame_dict:
+        cursor.execute('INSERT INTO {} VALUES ("{}", "{}")'.format(table_name, player, hall_of_fame_dict[player]))
 
 
 def createDBFields():
@@ -32,7 +42,11 @@ def createDBFields():
         'PlayerID': 'VARCHAR(100)',
         'PlayerName': 'VARCHAR(100)'
     }
-    return name_fields, player_bio_fields
+    hall_of_fame_fields = {
+        'PlayerID': 'VARCHAR(25)',
+        'YearOfInduction': 'Year'
+    }
+    return name_fields, player_bio_fields, hall_of_fame_fields
 
 
 def loadBaseballData():
@@ -56,27 +70,39 @@ def getPlayerNamesDictionary(filename):
         for line in player_info:
             line = [element.strip('"') for element in line]
             playerID, playerName = line[0], line[3] + ' ' + line[1]
-            playerNameDictionary[playerID] = playerName
-
+            playerNameDictionary[playerName] = playerID
     print(playerNameDictionary)
 
+    return playerNameDictionary
 
-def getHallOfFamePlayers():
-    pass
+
+def getHallOfFamePlayers(filename, playerNameDictionary):
+    hall_of_fame_dictionary = {}
+    with open(filename) as file:
+        file.readline()
+        hall_of_fame_info = csv.reader(file)
+        for line in hall_of_fame_info:
+            player_name, year_inducted = line[0], line[1]
+            if player_name in playerNameDictionary:
+                player_id = playerNameDictionary[player_name]
+                hall_of_fame_dictionary[player_id] = year_inducted
+    return hall_of_fame_dictionary
 
 
 def main():
     # loadBaseballData()
-    # cursor, conn = connect_to_SQL()
-    # createBaseballDB(cursor, "baseballStats_db")
-    # name_fields = createDBFields()
-    directories = []
-    getDataDirectories('battingstats', directories)
-    getDataDirectories('pitchingstats', directories)
-    getDataDirectories('awards', directories)
+    cursor, conn = connect_to_SQL()
+    createBaseballDB(cursor, "baseballStats_db")
+    name_fields, player_bio_fields, hall_of_fame_fields = createDBFields()
 
-    # createTable(cursor, name_fields, 'Player Names')
-    getPlayerNamesDictionary('playerinformation/playerBios.csv')
+    createTable(cursor, name_fields, 'Player_Names')
+    player_names_dict = getPlayerNamesDictionary('playerinformation/playerBios.csv')
+    load_Player_NamesTable(cursor, player_names_dict, 'Player_Names')
+
+    createTable(cursor, hall_of_fame_fields, 'Hall_Of_Fame')
+    hall_of_fame_dict = getHallOfFamePlayers('awards/The Hall of Fame.csv', player_names_dict)
+    load_HOF_Table(cursor, hall_of_fame_dict, 'Hall_Of_Fame')
+    conn.commit()
 
 
 if __name__ == '__main__':
