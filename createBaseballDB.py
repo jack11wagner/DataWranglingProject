@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
 import mysql.connector, os, csv
-import webscrapeAwardsAndHonors, webscrapeCareerLeaders, webscrapeTopIndividualPerf
+import webscrapeHallOfFame, webscrapeCareerLeaders, webscrapeTopIndividualPerf
 from datetime import datetime
 
 
@@ -125,11 +125,28 @@ def createDBFields():
         'Wins': 'INT'
     }
 
+    career_batting_stats = {
+        'PlayerID': 'VARCHAR(100)',
+        'Games': 'INT',
+        'At_Bats': 'INT',
+        'Runs': 'INT',
+        'Hits':'INT',
+        'Doubles': 'INT',
+        'Triples': 'INT',
+        'Homeruns': 'INT',
+        'Walks': 'INT',
+        'Intentional_Walks': 'INT',
+        'Strikeouts': 'INT',
+        'HitByPitch': 'INT',
+
+
+    }
+
     return name_fields, player_bio_fields, hall_of_fame_fields, all_time_batting, all_time_pitching
 
 
 def loadBaseballData():
-    webscrapeAwardsAndHonors.main()
+    webscrapeHallOfFame.main()
     webscrapeTopIndividualPerf.main()
     webscrapeCareerLeaders.main()
 
@@ -223,10 +240,6 @@ def getAllTimeLeadersDictionary(filedirectories, playerNameDictionary):
         players_not_in_file = [player for player in all_time_leaders.keys() if player not in list_of_players_in_file]
         for player in players_not_in_file:
             all_time_leaders[player].append('NULL')
-    # print(all_time_leaders)
-    # for key in all_time_leaders:
-    #     print(len(all_time_leaders[key]))
-
     return all_time_leaders
 
 
