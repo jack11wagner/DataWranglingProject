@@ -21,8 +21,15 @@
     - Some data from all time stats had random 'i' characters amongst data
     - In Hall of Fame Records, found instances of non players in the hall of fame
     - Found issues with matching up player names, some tables used nicknames while others used full names to identify players
+    - Invalid Dates Found in Player Bios Txt File replaced with 0000-01-01 in database
 
----     
+--- 
+
+
+- New Columns:
+
+    - Column to find length between debut game and last game in playerbios
+
 
 - Copyright Message:
 
