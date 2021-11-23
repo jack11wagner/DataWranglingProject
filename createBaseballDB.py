@@ -130,7 +130,7 @@ def createDBFields():
         'Games': 'INT',
         'At_Bats': 'INT',
         'Runs': 'INT',
-        'Hits':'INT',
+        'Hits': 'INT',
         'Doubles': 'INT',
         'Triples': 'INT',
         'Homeruns': 'INT',
@@ -138,11 +138,53 @@ def createDBFields():
         'Intentional_Walks': 'INT',
         'Strikeouts': 'INT',
         'HitByPitch': 'INT',
-
-
+        'Sacrifice Hits': 'INT',
+        'Sacrifice Flies': 'INT',
+        'XI': 'INT',
+        'ROE': 'INT',
+        'Grounded_Into_DoublePlays': 'INT',
+        'Stolen_Bases': 'INT',
+        'Caught_Stealing': 'INT',
+        'Batting_AVG': 'FLOAT',
+        'On_Base_Percent': 'FLOAT',
+        'Slugging_Percent': 'FLOAT',
+        'BFW': 'FLOAT'
     }
 
-    return name_fields, player_bio_fields, hall_of_fame_fields, all_time_batting, all_time_pitching
+    career_pitching_stats = {
+
+        'PlayerID': 'VARCHAR(100)',
+        'Games': 'INT',
+        'Games_Started': 'INT',
+        'Complete_Games': 'INT',
+        'Shutouts': 'INT',
+        'GamesFinished': 'INT',
+        'Saves': 'INT',
+        'Innings_Pitched': 'INT',
+        'Hits': 'INT',
+        'BFP': 'INT',
+        'Homeruns': 'INT',
+        'Runs': 'INT',
+        'Walks': 'INT',
+        'Intentional_Walks': 'INT',
+        'Strikeouts': 'INT',
+        'Sacrifice_Hits': 'INT',
+        'Sacrifice_Flies': 'INT',
+        'Wild_Pitches': 'INT',
+        'Hit_By_Pitch': 'INT',
+        'Balks': 'INT',
+        'Doubles': 'INT',
+        'Triples': 'INT',
+        'Grounded_Double_Play': 'INT',
+        'ROE': 'INT',
+        'Wins': 'INT',
+        'Losses': 'INT',
+        'ERA': 'FLOAT',
+        'RunSupport': 'FLOAT',
+        'PW': 'FLOAT'
+    }
+
+    return name_fields, player_bio_fields, hall_of_fame_fields, all_time_batting, all_time_pitching, career_batting_stats, career_pitching_stats
 
 
 def loadBaseballData():
@@ -178,7 +220,7 @@ def convertDate(date):
     try:
         d = datetime.strptime(date, format_string)
     except (ValueError):
-        # if there is an error in the date format we simply return 0000-01-01 as the date to denote an invalid date
+        # if there is no date we return 0000-01-01 to denote no date
         return '0000-01-01'
     output_date = "%Y-%m-%d"
     return d.strftime(output_date)
@@ -201,7 +243,6 @@ def getPlayerBioDictionary(filename):
                                                                              throws_index],
             debut_date, final_game = convertDate(debut_date), convertDate(final_game)
             playerBioDictionary[playerID] = [playerName, debut_date, final_game, bats, throws]
-    # print(playerBioDictionary)
     return playerBioDictionary
 
 
@@ -247,8 +288,8 @@ def main():
     # loadBaseballData()
     cursor, conn = connect_to_SQL()
     createBaseballDB(cursor, "baseballStats_db")
-    name_fields, player_bio_fields, hall_of_fame_fields, all_time_batting, all_time_pitching = createDBFields()
-    #
+    name_fields, player_bio_fields, hall_of_fame_fields, all_time_batting, all_time_pitching, career_batting_stats, career_pitching_stats = createDBFields()
+
     createTable(cursor, name_fields, 'Player_Names')
     player_names_dict = getPlayerNamesDictionary('playerinformation/playerBios.csv')
     load_Player_NamesTable(cursor, player_names_dict, 'Player_Names')
