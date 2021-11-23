@@ -1,10 +1,8 @@
 from dotenv import load_dotenv
 import mysql.connector, os, csv
-import webscrapeHallOfFame, webscrapeCareerLeaders, webscrapeTopIndividualPerf
+import webscrapeHallOfFame, webscrapeCareerLeaders, webscrapeTopIndividualPerf, webscrapePlayerCareerStats
 from datetime import datetime
-from urllib.request import urlopen
-from bs4 import BeautifulSoup
-import pandas as pd
+
 
 
 def connect_to_SQL():
@@ -205,6 +203,17 @@ def getDataDirectories(folder_name):
     return directories
 
 
+def convertDate(date):
+    format_string = "%m/%d/%Y"
+    try:
+        d = datetime.strptime(date, format_string)
+    except (ValueError):
+        # if there is no date we return 0000-01-01 to denote no date
+        return '0000-01-01'
+    output_date = "%Y-%m-%d"
+    return d.strftime(output_date)
+
+
 def getPlayerNamesDictionary(filename):
     playerNameDictionary = {}
     with open(filename) as file:
@@ -216,17 +225,6 @@ def getPlayerNamesDictionary(filename):
             playerNameDictionary[playerName] = playerID
 
     return playerNameDictionary
-
-
-def convertDate(date):
-    format_string = "%m/%d/%Y"
-    try:
-        d = datetime.strptime(date, format_string)
-    except (ValueError):
-        # if there is no date we return 0000-01-01 to denote no date
-        return '0000-01-01'
-    output_date = "%Y-%m-%d"
-    return d.strftime(output_date)
 
 
 def getPlayerBioDictionary(filename):
@@ -262,90 +260,8 @@ def getHallOfFamePlayers(filename, playerNameDictionary):
     return hall_of_fame_dictionary
 
 
-def getAllTimeLeadersDictionary(playerNameDictionary):
-    batters_list = []
-    pitchers_list = []
-    batters_headers = ['Player Name', 'G', 'AB', 'R', 'H', '2B', '3B', 'HR', 'RBI', 'BB', 'IBB', 'SO', 'HBP', 'SH', 'SF', 'XI', 'ROE',
-                       'GDP', 'SB', 'CS', 'AVG', 'OBP', 'SLG', 'BFW']
-
-    pitchers_headers = ['Player Name', 'G', 'GS', 'CG', 'SHO', 'GF', 'SV', 'IP', 'H', 'BFP', 'HR', 'R', 'ER', 'BB', 'IB', 'SO', 'SH',
-                        'SF', 'WP', 'HBP', 'BK', '2B', '3B', 'GDP', 'ROE', 'W', 'L', 'ERA', 'RS', 'PW']
-
-    for name in playerNameDictionary:
-        player_id = playerNameDictionary[name]
-        player_last_name_first_character = player_id[0].upper()
-
-        url = "https://www.retrosheet.org/boxesetc/" + player_last_name_first_character + "/P" + player_id + ".htm"
-        html = urlopen(url)
-        soup = BeautifulSoup(html, features='html.parser')
-        text = [words.getText() for words in soup.find_all('pre')]
-        text.remove(text[-1])
-        for line in text:
-            title = line.split("\n")[0].strip()
-            if title != "Fielding Record":
-                continue
-            position_text = line.split("\n")[2]
-            position = position_text[25:28].strip()
-
-            if position != "P":
-                batter_stats_list = []
-                batter_stats_list.append(name)
-                for line in text:
-                    title = line.split("\n")[0].strip()
-                    if title == "Batting Record":
-                        stats = line.split("\n")
-                        for stat in stats:
-                            categories = stat.split(" ")
-                            if categories[0] == "Total" and categories[1] == '':
-                                categories.remove(categories[0])
-                                categories.remove(categories[0])
-                                categories.remove(categories[0])
-                                categories.remove(categories[0])
-                                categories.remove(categories[0])
-                                categories.remove(categories[0])
-                                categories.remove(categories[0])
-                                for category in categories:
-                                    if category != '' and category != "Total" and category != "Splits" and category != ")":
-                                        batter_stats_list.append(category)
-                                batters_list.append(batter_stats_list)
-                                batter_stats_df = pd.DataFrame(batters_list, columns=batters_headers)
-                                print(batter_stats_df)
-                                break
-
-            else:
-                pitcher_stats_list = []
-                pitcher_stats_list.append(name)
-                for line in text:
-                    title = line.split("\n")[0].strip()
-                    if title == "Pitching Record":
-                        stats = line.split("\n")
-                        for stat in stats:
-                            categories = stat.split(" ")
-                            if categories[0] == "Total" and categories[1] == '':
-                                categories.remove(categories[0])
-                                categories.remove(categories[0])
-                                categories.remove(categories[0])
-                                categories.remove(categories[0])
-                                categories.remove(categories[0])
-                                categories.remove(categories[0])
-                                for category in categories:
-                                    if category == "-":
-                                        pitcher_stats_list.append("None")
-                                        continue
-                                    if category != '' and category != "Total" and category != "Splits" and category != "Years)":
-                                        pitcher_stats_list.append(category)
-                                pitchers_list.append(pitcher_stats_list)
-                                pitcher_stats_df = pd.DataFrame(pitchers_list, columns=pitchers_headers)
-                                print(pitcher_stats_df)
-                                break
-
-
-
-
-
-
-    
-    """
+def getAllTimeLeadersDictionary(filedirectories, playerNameDictionary):
+    all_time_leaders = {}
     for file in filedirectories:
         in_file = open(file)
         in_file.readline()
@@ -367,43 +283,60 @@ def getAllTimeLeadersDictionary(playerNameDictionary):
         for player in players_not_in_file:
             all_time_leaders[player].append('NULL')
     return all_time_leaders
-    """
+
+
+def getCareerStatsForEachPlayer(playerNameDictionary):
+    # TODO Create Rate Limiting for Webscraping
+    batting_file = open('playerinformation/batting_stats.csv', 'a')
+    pitching_file = open('playerinformation/pitching_stats.csv', 'a')
+    player_dict_len = len(playerNameDictionary.keys())
+    current_index = 0
+    for player in playerNameDictionary:
+        try:
+            webscrapePlayerCareerStats.getAllTimeLeadersDictionary(player, playerNameDictionary, batting_file, pitching_file)
+            current_index += 1
+            print('Current Completion Level: {}/{}'.format(current_index, player_dict_len))
+        except(ValueError):
+            continue
+
 
 def main():
     # loadBaseballData()
-    """
-    cursor, conn = connect_to_SQL()
-    createBaseballDB(cursor, "baseballStats_db")
-    name_fields, player_bio_fields, hall_of_fame_fields, all_time_batting, all_time_pitching, career_batting_stats, career_pitching_stats = createDBFields()
 
-    createTable(cursor, name_fields, 'Player_Names')
-    """
+    # cursor, conn = connect_to_SQL()
+    # createBaseballDB(cursor, "baseballStats_db")
+    # name_fields, player_bio_fields, hall_of_fame_fields, all_time_batting, all_time_pitching, career_batting_stats, career_pitching_stats = createDBFields()
+    #
+    # createTable(cursor, name_fields, 'Player_Names')
+
     player_names_dict = getPlayerNamesDictionary('playerinformation/playerBios.csv')
-    """
-    load_Player_NamesTable(cursor, player_names_dict, 'Player_Names')
+    #
+    # load_Player_NamesTable(cursor, player_names_dict, 'Player_Names')
+    #
+    # createTable(cursor, player_bio_fields, 'Player_Bios')
+    # player_bio_dict = getPlayerBioDictionary('playerinformation/playerBios.csv')
+    # loadPlayerBiosTable(cursor, player_bio_dict, 'Player_Bios')
+    #
+    # createTable(cursor, hall_of_fame_fields, 'Hall_Of_Fame')
+    # hall_of_fame_dict = getHallOfFamePlayers('awards/The Hall of Fame.csv', player_names_dict)
+    # load_HOF_Table(cursor, hall_of_fame_dict, 'Hall_Of_Fame')
+    #
+    # createTable(cursor, all_time_batting, 'All_Time_Batting')
+    # all_time_batting_dirs = sorted(getDataDirectories('battingstats/careerleaders/'))
+    #
+    # all_time_batting = getAllTimeLeadersDictionary(all_time_batting_dirs, player_names_dict)
+    #
+    # loadAllTimeBattingLeaders(cursor, all_time_batting, 'All_Time_Batting')
+    #
+    # all_time_pitching_dirs = sorted(getDataDirectories('pitchingstats/careerleaders/'))
+    # createTable(cursor, all_time_pitching, 'All_Time_Pitching')
+    # all_time_pitching = getAllTimeLeadersDictionary(all_time_pitching_dirs, player_names_dict)
+    # loadAllTimePitchingLeaders(cursor, all_time_pitching, 'All_Time_Pitching')
 
-    createTable(cursor, player_bio_fields, 'Player_Bios')
-    player_bio_dict = getPlayerBioDictionary('playerinformation/playerBios.csv')
-    loadPlayerBiosTable(cursor, player_bio_dict, 'Player_Bios')
 
-    createTable(cursor, hall_of_fame_fields, 'Hall_Of_Fame')
-    hall_of_fame_dict = getHallOfFamePlayers('awards/The Hall of Fame.csv', player_names_dict)
-    load_HOF_Table(cursor, hall_of_fame_dict, 'Hall_Of_Fame')
+    getCareerStatsForEachPlayer(player_names_dict)
+    # conn.commit()
 
-    createTable(cursor, all_time_batting, 'All_Time_Batting')
-    all_time_batting_dirs = sorted(getDataDirectories('battingstats/careerleaders/'))
-    """
-    all_time_batting = getAllTimeLeadersDictionary(player_names_dict)
-    """
-    loadAllTimeBattingLeaders(cursor, all_time_batting, 'All_Time_Batting')
-
-    all_time_pitching_dirs = sorted(getDataDirectories('pitchingstats/careerleaders/'))
-    createTable(cursor, all_time_pitching, 'All_Time_Pitching')
-    all_time_pitching = getAllTimeLeadersDictionary(all_time_pitching_dirs, player_names_dict)
-    loadAllTimePitchingLeaders(cursor, all_time_pitching, 'All_Time_Pitching')
-
-    conn.commit()
-    """
 
 if __name__ == '__main__':
     main()
