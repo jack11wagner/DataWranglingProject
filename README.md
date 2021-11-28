@@ -11,6 +11,7 @@
      - All-Time Career Leaders
      - Top Individual Performances
      - Awards & Honors
+     - Individual Career Batting/Pitching Stats
 
 ---
 
@@ -23,12 +24,22 @@
     - Found issues with matching up player names, some tables used nicknames while others used full names to identify players
     - Invalid Dates Found in Player Bios Txt File replaced with 0000-01-01 in database
 
+---
+
+- Individual Career Stats:
+     
+     - Using the various playerIDs we were able to search up player URLs and do webscrapes for their individual career stat lines
+     - Made sure to limit webscraping to 7 players per minute to make sure to not abuse retrosheets web server
+     - Wrote player data to batting/pitching csv files
+
+
 --- 
 
 
 - New Columns:
 
     - Column to find length between debut game and last game in playerbios
+    - *** Possibly a column for Win/Loss Ratio ***
 
 
 - Copyright Message:
