@@ -4,7 +4,6 @@ import webscrapeHallOfFame, webscrapeCareerLeaders, webscrapeTopIndividualPerf, 
 from datetime import datetime
 
 
-
 def connect_to_SQL():
     load_dotenv()
     conn = mysql.connector.connect(user=os.getenv("USERNAME"), password=os.getenv("PASSWORD"),
@@ -25,36 +24,36 @@ def createTable(cursor, fields, table_name):
     cursor.execute('CREATE TABLE {} ({})'.format(table_name, columns))
 
 
-def load_Player_NamesTable(cursor, player_names_dict, table_name):
+def loadPlayerNamesTable(cursor, player_names_dict, table_name):
     for player in player_names_dict:
         cursor.execute('INSERT INTO {} VALUES ("{}","{}")'.format(table_name, player_names_dict[player], player))
 
 
-def load_HOF_Table(cursor, hall_of_fame_dict, table_name):
+def loadHOFTable(cursor, hall_of_fame_dict, table_name):
     for player in hall_of_fame_dict:
         cursor.execute('INSERT INTO {} VALUES ("{}", "{}")'.format(table_name, player, hall_of_fame_dict[player]))
 
 
 def loadPlayerBiosTable(cursor, bios_dict, table_name):
     for player in bios_dict:
-        playerName, debut_date, final_game, bats, throws = bios_dict[player]
+        debut_date, final_game, bats, throws = bios_dict[player]
         cursor.execute(
-            'INSERT INTO {} VALUES ("{}", "{}", "{}", "{}", "{}","{}")'.format(table_name, player, playerName,
-                                                                               debut_date, final_game, bats, throws))
+            'INSERT INTO {} VALUES ("{}", "{}", "{}", "{}","{}")'.format(table_name, player,
+                                                                         debut_date, final_game, bats, throws))
 
 
-def loadAllTimeBattingLeaders(cursor, all_time_batting, table_name):
-    for player in all_time_batting:
-        cursor.execute(
-            'INSERT INTO {} VALUES ("{}", {}, {}, {}, {},{}, {}, {}, {}, {}, {},{}, {}, {}, {}, {}, {},{}, {}, {}, {}, {}, {})'.format(
-                table_name, player, *all_time_batting[player]))
+def loadAllTimeLeaders(cursor, all_time_leader_stats, table_name):
+    for player in all_time_leader_stats:
+        leaders_string = ','.join(all_time_leader_stats[player])
+        sql = f'INSERT INTO {table_name} VALUES ("{player}",' + leaders_string + ')'  # string slicing to remove extra comma and append a parenthesis to the sql command
+        cursor.execute(sql)
 
 
-def loadAllTimePitchingLeaders(cursor, all_time_pitching, table_name):
-    for player in all_time_pitching:
-        cursor.execute(
-            'INSERT INTO {} VALUES ("{}", {}, {}, {}, {},{}, {}, {}, {}, {}, {},{}, {}, {}, {}, {}, {},{}, {}, {}, {}, {})'.format(
-                table_name, player, *all_time_pitching[player]))
+def loadCareerStatsTables(cursor, career_stats, table_name):
+    for player in career_stats:
+        stats_string = ','.join(career_stats[player])
+        sql = f'INSERT INTO {table_name} VALUES ("{player}",' + stats_string + ')'  # string slicing to remove extra comma and append a parenthesis to the sql command
+        cursor.execute(sql)
 
 
 def createDBFields():
@@ -64,7 +63,6 @@ def createDBFields():
     }
     player_bio_fields = {
         'PlayerID': 'VARCHAR(100)',
-        'PlayerName': 'VARCHAR(100)',
         'debutDate': 'DATE',
         'finalGameDate': 'DATE',
         'bats': 'CHAR(1)',
@@ -77,18 +75,18 @@ def createDBFields():
     }
     all_time_batting = {
         'PlayerID': 'VARCHAR(25)',
-        'At_Bats': 'FLOAT',
+        'AtBats': 'FLOAT',
         'BFW': 'FLOAT',
         'Batting_Avg': 'FLOAT',
         'CaughtStealing': 'FLOAT',
         'Doubles': 'FLOAT',
         'Games': 'FLOAT',
-        'Grounded_Into_Double_Plays': 'FLOAT',
+        'GroundedIntoDoublePlays': 'FLOAT',
         'HitByPitch': 'INT',
         'Hits': 'Float',
         'Homeruns': 'INT',
         'Intentional_Walks': 'INT',
-        'On_Base_Percentage': 'FLOAT',
+        'OnBasePercentage': 'FLOAT',
         'Plate_Apps': 'INT',
         'RBIs': 'INT',
         'Runs': 'INT',
@@ -104,7 +102,7 @@ def createDBFields():
     all_time_pitching = {
         'PlayerID': 'VARCHAR(25)',
         'Balks': 'FLOAT',
-        'Complete_Games': 'FLOAT',
+        'CompleteGames': 'FLOAT',
         'ERA': 'FLOAT',
         'Earned_Runs': 'INT',
         'GamesFinished': 'INT',
@@ -122,61 +120,64 @@ def createDBFields():
         'Shutouts': 'INT',
         'Strikeouts': 'INT',
         'Walks': ' INT',
-        'Wild_Pitches': 'INT',
+        'WildPitches': 'INT',
         'Wins': 'INT'
     }
 
     career_batting_stats = {
+        # Career Batting Table Columns
         'PlayerID': 'VARCHAR(100)',
         'Games': 'INT',
-        'At_Bats': 'INT',
+        'AtBats': 'INT',
         'Runs': 'INT',
         'Hits': 'INT',
         'Doubles': 'INT',
         'Triples': 'INT',
         'Homeruns': 'INT',
+        'RBI': 'INT',
         'Walks': 'INT',
-        'Intentional_Walks': 'INT',
+        'IntentionalWalks': 'INT',
         'Strikeouts': 'INT',
         'HitByPitch': 'INT',
-        'Sacrifice Hits': 'INT',
-        'Sacrifice Flies': 'INT',
+        'Sacrifice_Hits': 'INT',
+        'Sacrifice_Flies': 'INT',
         'XI': 'INT',
         'ROE': 'INT',
-        'Grounded_Into_DoublePlays': 'INT',
-        'Stolen_Bases': 'INT',
-        'Caught_Stealing': 'INT',
-        'Batting_AVG': 'FLOAT',
-        'On_Base_Percent': 'FLOAT',
-        'Slugging_Percent': 'FLOAT',
+        'GroundedIntoDoublePlays': 'INT',
+        'StolenBases': 'INT',
+        'CaughtStealing': 'INT',
+        'BattingAVG': 'FLOAT',
+        'On_BasePercent': 'FLOAT',
+        'SluggingPercent': 'FLOAT',
         'BFW': 'FLOAT'
     }
 
     career_pitching_stats = {
-
+        # Career Pitching Table Columns
         'PlayerID': 'VARCHAR(100)',
         'Games': 'INT',
-        'Games_Started': 'INT',
-        'Complete_Games': 'INT',
+        'GamesStarted': 'INT',
+        'CompleteGames': 'INT',
         'Shutouts': 'INT',
         'GamesFinished': 'INT',
         'Saves': 'INT',
-        'Innings_Pitched': 'INT',
+        'InningsPitched': 'INT',
         'Hits': 'INT',
         'BFP': 'INT',
         'Homeruns': 'INT',
         'Runs': 'INT',
+        'EarnedRuns': 'INT',
         'Walks': 'INT',
-        'Intentional_Walks': 'INT',
+        'IntentionalWalks': 'INT',
         'Strikeouts': 'INT',
-        'Sacrifice_Hits': 'INT',
-        'Sacrifice_Flies': 'INT',
-        'Wild_Pitches': 'INT',
-        'Hit_By_Pitch': 'INT',
+        'SacrificeHits': 'INT',
+        'SacrificeFlies': 'INT',
+        'WildPitches': 'INT',
+        'HitByPitch': 'INT',
         'Balks': 'INT',
         'Doubles': 'INT',
         'Triples': 'INT',
-        'Grounded_Double_Play': 'INT',
+        'GroundedIntoDoublePlays': 'INT',
         'ROE': 'INT',
         'Wins': 'INT',
         'Losses': 'INT',
@@ -189,9 +190,38 @@ def createDBFields():
 
 
 def loadBaseballData():
+    """
+    This function calls all of our webscraping python files which loads various sources from retrosheet into CSVs for database loading
+    """
     webscrapeHallOfFame.main()
     webscrapeTopIndividualPerf.main()
     webscrapeCareerLeaders.main()
+
+
+def webscrapeCareerStatsForEachPlayer(playerNameDictionary):
+    """
+    Opens batting/pitching files for adding career statistics
+    This function calls our separate webscrape file which goes to each individual players url and scrapes either their pitching record, fielding record or both
+    Any errors in formatting such as players missing fields or players that did not have certain stats were skipped over in the webscraping process
+    We made sure not to abuse the webscraping of retrosheet by making sure only making calls out to the server 7 times per minute.
+
+    I ran this particular function on my raspberry pi and it took roughly 23 hours total to webscrape all of the necessary data
+
+    """
+    # TODO Create Rate Limiting for Webscraping
+    batting_file = open('playerinformation/batting_stats.csv', 'a')
+    pitching_file = open('playerinformation/pitching_stats.csv', 'a')
+    player_dict_len = len(playerNameDictionary.keys())
+    current_index = 0
+    player_list = list(playerNameDictionary.keys())
+    for player in player_list:
+        try:
+            webscrapePlayerCareerStats.webscrapeCareerStats(player, playerNameDictionary, batting_file,
+                                                            pitching_file)
+            current_index += 1
+            print('Current Completion Level: {}/{}'.format(current_index, player_dict_len))
+        except ValueError:
+            continue
 
 
 def getDataDirectories(folder_name):
@@ -207,7 +237,7 @@ def convertDate(date):
     format_string = "%m/%d/%Y"
     try:
         d = datetime.strptime(date, format_string)
-    except (ValueError):
+    except ValueError:
         # if there is no date we return 0000-01-01 to denote no date
         return '0000-01-01'
     output_date = "%Y-%m-%d"
@@ -227,7 +257,7 @@ def getPlayerNamesDictionary(filename):
     return playerNameDictionary
 
 
-def getPlayerBioDictionary(filename):
+def getPlayerBiosDictionary(filename):
     playerBioDictionary = {}
     with open(filename) as file:
         headers = [header.strip() for header in file.readline().split(',')]
@@ -238,16 +268,14 @@ def getPlayerBioDictionary(filename):
         player_info = csv.reader(file)
         for line in player_info:
             line = [element.strip('"') for element in line]
-            playerID, playerName, debut_date, final_game, bats, throws = line[0], line[3] + ' ' + line[1], line[
-                debut_date_index], \
-                                                                         line[final_game_index], line[bats_index], line[
-                                                                             throws_index],
+            playerID, debut_date, final_game, bats, throws = line[0], line[debut_date_index], line[final_game_index], \
+                                                             line[bats_index], line[throws_index],
             debut_date, final_game = convertDate(debut_date), convertDate(final_game)
-            playerBioDictionary[playerID] = [playerName, debut_date, final_game, bats, throws]
+            playerBioDictionary[playerID] = [debut_date, final_game, bats, throws]
     return playerBioDictionary
 
 
-def getHallOfFamePlayers(filename, playerNameDictionary):
+def getHallOfFamePlayersDictionary(filename, playerNameDictionary):
     hall_of_fame_dictionary = {}
     with open(filename) as file:
         file.readline()
@@ -285,57 +313,62 @@ def getAllTimeLeadersDictionary(filedirectories, playerNameDictionary):
     return all_time_leaders
 
 
-def getCareerStatsForEachPlayer(playerNameDictionary):
-    # TODO Create Rate Limiting for Webscraping
-    batting_file = open('playerinformation/batting_stats.csv', 'a')
-    pitching_file = open('playerinformation/pitching_stats.csv', 'a')
-    player_dict_len = len(playerNameDictionary.keys())
-    current_index = 0
-    for player in playerNameDictionary:
-        try:
-            webscrapePlayerCareerStats.getAllTimeLeadersDictionary(player, playerNameDictionary, batting_file, pitching_file)
-            current_index += 1
-            print('Current Completion Level: {}/{}'.format(current_index, player_dict_len))
-        except(ValueError):
-            continue
+def getCareerStatsForPlayersDictionary(filename):
+    career_stats_dict = {}
+    with open(filename) as file:
+        file.readline()
+        career_stats = csv.reader(file)
+        for line in career_stats:
+            career_stats_dict[line[0]] = line[1:]
+    return career_stats_dict
 
 
 def main():
     # loadBaseballData()
 
-    # cursor, conn = connect_to_SQL()
-    # createBaseballDB(cursor, "baseballStats_db")
-    # name_fields, player_bio_fields, hall_of_fame_fields, all_time_batting, all_time_pitching, career_batting_stats, career_pitching_stats = createDBFields()
-    #
-    # createTable(cursor, name_fields, 'Player_Names')
+    cursor, conn = connect_to_SQL()
+    createBaseballDB(cursor, "baseballStats_db")
+    name_fields, player_bio_fields, hall_of_fame_fields, all_time_batting_fields, all_time_pitching_fields, \
+    career_batting_stats_fields, career_pitching_stats_fields = createDBFields()
 
+    # Player Names Table
+    createTable(cursor, name_fields, 'PlayerNames')
     player_names_dict = getPlayerNamesDictionary('playerinformation/playerBios.csv')
-    #
-    # load_Player_NamesTable(cursor, player_names_dict, 'Player_Names')
-    #
-    # createTable(cursor, player_bio_fields, 'Player_Bios')
-    # player_bio_dict = getPlayerBioDictionary('playerinformation/playerBios.csv')
-    # loadPlayerBiosTable(cursor, player_bio_dict, 'Player_Bios')
-    #
-    # createTable(cursor, hall_of_fame_fields, 'Hall_Of_Fame')
-    # hall_of_fame_dict = getHallOfFamePlayers('awards/The Hall of Fame.csv', player_names_dict)
-    # load_HOF_Table(cursor, hall_of_fame_dict, 'Hall_Of_Fame')
-    #
-    # createTable(cursor, all_time_batting, 'All_Time_Batting')
-    # all_time_batting_dirs = sorted(getDataDirectories('battingstats/careerleaders/'))
-    #
-    # all_time_batting = getAllTimeLeadersDictionary(all_time_batting_dirs, player_names_dict)
-    #
-    # loadAllTimeBattingLeaders(cursor, all_time_batting, 'All_Time_Batting')
-    #
-    # all_time_pitching_dirs = sorted(getDataDirectories('pitchingstats/careerleaders/'))
-    # createTable(cursor, all_time_pitching, 'All_Time_Pitching')
-    # all_time_pitching = getAllTimeLeadersDictionary(all_time_pitching_dirs, player_names_dict)
-    # loadAllTimePitchingLeaders(cursor, all_time_pitching, 'All_Time_Pitching')
+    loadPlayerNamesTable(cursor, player_names_dict, 'PlayerNames')
 
+    # Player Bios Table
+    createTable(cursor, player_bio_fields, 'PlayerBios')
+    player_bio_dict = getPlayerBiosDictionary('playerinformation/playerBios.csv')
+    loadPlayerBiosTable(cursor, player_bio_dict, 'PlayerBios')
 
-    getCareerStatsForEachPlayer(player_names_dict)
-    # conn.commit()
+    # Hall Of Fame Table
+    createTable(cursor, hall_of_fame_fields, 'HallOfFame')
+    hall_of_fame_dict = getHallOfFamePlayersDictionary('awards/The Hall of Fame.csv', player_names_dict)
+    loadHOFTable(cursor, hall_of_fame_dict, 'HallOfFame')
+
+    # All Time Batting Leaders Table
+    createTable(cursor, all_time_batting_fields, 'AllTimeBatting')
+    all_time_batting_dirs = sorted(getDataDirectories('battingstats/careerleaders/'))
+    all_time_batting = getAllTimeLeadersDictionary(all_time_batting_dirs, player_names_dict)
+    loadAllTimeLeaders(cursor, all_time_batting, 'AllTimeBatting')
+
+    # All Time Pitching Leaders Table
+    all_time_pitching_dirs = sorted(getDataDirectories('pitchingstats/careerleaders/'))
+    createTable(cursor, all_time_pitching_fields, 'AllTimePitching')
+    all_time_pitching = getAllTimeLeadersDictionary(all_time_pitching_dirs, player_names_dict)
+    loadAllTimeLeaders(cursor, all_time_pitching, 'AllTimePitching')
+
+    # Career Batting Stats for All Players Table
+    # webscrapeCareerStatsForEachPlayer(player_names_dict)
+    createTable(cursor, career_batting_stats_fields, 'CareerBattingStats')
+    career_batting_stats = getCareerStatsForPlayersDictionary('playerinformation/batting_stats.csv')
+    loadCareerStatsTables(cursor, career_batting_stats, 'CareerBattingStats')
+
+    # Career Pitching Stats for All Players Table
+    createTable(cursor, career_pitching_stats_fields, 'CareerPitchingStats')
+    career_pitching_stats = getCareerStatsForPlayersDictionary('playerinformation/pitching_stats.csv')
+    loadCareerStatsTables(cursor, career_pitching_stats, 'CareerPitchingStats')
+    conn.commit()
 
 
 if __name__ == '__main__':
