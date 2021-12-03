@@ -363,6 +363,7 @@ def getCareerStatsForPlayersDictionary(filename):
 def addColumns(cursor, column, datatype, tbl_name, player_bio_dict, career_stats_dict):
     cursor.execute(f"ALTER TABLE {tbl_name} ADD {column} {datatype}")
     cursor.execute(f"ALTER TABLE {tbl_name} ADD careerLength INT")
+
     for player in player_bio_dict:
         try:
             games = career_stats_dict[player][0]
@@ -374,7 +375,6 @@ def addColumns(cursor, column, datatype, tbl_name, player_bio_dict, career_stats
             games_per_year = float(games) / float(career_length)
             cursor.execute(f"UPDATE {tbl_name} SET {column} = {round(games_per_year, 2)} WHERE PlayerID ='{player}'")
             cursor.execute(f"UPDATE {tbl_name} SET careerLength = {career_length} WHERE PlayerID ='{player}'")
-
             # UPDATE table_name SET column1 = value1, column2 = value2, ...WHERE condition;
         except KeyError:
             continue
@@ -392,43 +392,49 @@ def main():
     createTable(cursor, name_fields, 'PlayerNames')
     player_names_dict = getPlayerNamesDictionary('playerinformation/playerBios.csv')
     loadPlayerNamesTable(cursor, player_names_dict, 'PlayerNames')
+    print("PlayerNames Table Loaded...")
 
     # Player Bios Table
     createTable(cursor, player_bio_fields, 'PlayerBios')
     player_bio_dict = getPlayerBiosDictionary('playerinformation/playerBios.csv')
     loadPlayerBiosTable(cursor, player_bio_dict, 'PlayerBios')
+    print("PlayerBios Table Loaded...")
 
     # Hall Of Fame Table
     createTable(cursor, hall_of_fame_fields, 'HallOfFame')
     hall_of_fame_dict = getHallOfFamePlayersDictionary('awards/The Hall of Fame.csv', player_names_dict)
     loadHOFTable(cursor, hall_of_fame_dict, 'HallOfFame')
+    print("HallOfFame Table Loaded...")
 
     # All Time Batting Leaders Table
     createTable(cursor, all_time_batting_fields, 'AllTimeBatting')
     all_time_batting_dirs = sorted(getDataDirectories('battingstats/careerleaders/'))
     batting_string = "Batting"
     loadAllTimeLeaders(all_time_batting_dirs, player_names_dict, batting_string, cursor)
+    print("AllTimeBattingLeaders Tables Loaded...")
 
     # All Time Pitching Leaders Table
     all_time_pitching_dirs = sorted(getDataDirectories('pitchingstats/careerleaders/'))
     createTable(cursor, all_time_pitching_fields, 'AllTimePitching')
     pitching_string = "Pitching"
     loadAllTimeLeaders(all_time_pitching_dirs, player_names_dict, pitching_string, cursor)
+    print("AllTimePitchingLeaders Table Loaded...")
 
     # Career Batting Stats for All Players Table
     # webscrapeCareerStatsForEachPlayer(player_names_dict)
     createTable(cursor, career_batting_stats_fields, 'CareerBattingStats')
     career_batting_stats = getCareerStatsForPlayersDictionary('playerinformation/batting_stats.csv')
     loadCareerStatsTables(cursor, career_batting_stats, 'CareerBattingStats')
+    print("CareerBattingStats Table Loaded...")
 
     # Career Pitching Stats for All Players Table
     createTable(cursor, career_pitching_stats_fields, 'CareerPitchingStats')
     career_pitching_stats = getCareerStatsForPlayersDictionary('playerinformation/pitching_stats.csv')
     loadCareerStatsTables(cursor, career_pitching_stats, 'CareerPitchingStats')
+    print("CareerPitchingStats Table Loaded...")
 
     addColumns(cursor, 'AVGGamesPerYear', 'FLOAT', 'CareerBattingStats', player_bio_dict, career_batting_stats)
     addColumns(cursor, 'AVGGamesPerYear', 'FLOAT', 'CareerPitchingStats', player_bio_dict, career_pitching_stats)
-
     conn.commit()
 
 
