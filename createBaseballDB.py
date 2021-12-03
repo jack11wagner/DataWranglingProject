@@ -45,13 +45,6 @@ def loadPlayerBiosTable(cursor, bios_dict, table_name):
                                                                              career_length, excess_months, birth_state, birth_country))
 
 
-def loadAllTimeLeaders(cursor, all_time_leader_stats, table_name):
-    for player in all_time_leader_stats:
-        leaders_string = ','.join(all_time_leader_stats[player])
-        sql = f'INSERT INTO {table_name} VALUES ("{player}",' + leaders_string + ')'  # string slicing to remove extra comma and append a parenthesis to the sql command
-        cursor.execute(sql)
-
-
 def loadCareerStatsTables(cursor, career_stats, table_name):
     for player in career_stats:
         stats_string = ','.join(career_stats[player])
@@ -320,29 +313,41 @@ def getHallOfFamePlayersDictionary(filename, playerNameDictionary, ):
     return hall_of_fame_dictionary
 
 
-def getAllTimeLeadersDictionary(filedirectories, playerNameDictionary):
-    all_time_leaders = {}
-    for file in filedirectories:
-        in_file = open(file)
-        in_file.readline()
-        all_time_stats = csv.reader(in_file)
-        for line in all_time_stats:
-            playerId = playerNameDictionary[line[0]]
-            all_time_leaders[playerId] = []
+def loadAllTimeLeaders(filedirectories, playerDictionary, player_position, cursor):
 
-    for file in filedirectories:
-        list_of_players_in_file = []
-        in_file = open(file)
-        in_file.readline()
-        all_time_stats = csv.reader(in_file)
-        for line in all_time_stats:
-            playerId = playerNameDictionary[line[0]]
-            all_time_leaders[playerId].append(line[1])
-            list_of_players_in_file.append(playerId)
-        players_not_in_file = [player for player in all_time_leaders.keys() if player not in list_of_players_in_file]
-        for player in players_not_in_file:
-            all_time_leaders[player].append('NULL')
-    return all_time_leaders
+    for filename in filedirectories:
+        with open(filename) as file:
+            headers = file.readline()
+            headers = headers.replace("\n", "")
+            categories = headers.split(",")
+            categories[0] = categories[0].replace(" ", "")
+            player_name_header = categories[0]
+            category = categories[1]
+            if category == "G":
+                category_list = categories[1]
+            else:
+                category_list = categories[1:]
+
+            fields = "playerID VARCHAR(255), " + player_name_header + " VARCHAR(255)"
+            for value in category_list:
+                value = value.replace("/", "Per")
+                value = value.replace("%", "Percentage")
+                fields = fields + ", " + value + " FLOAT"
+            table_name = player_position + category
+            cursor.execute('DROP TABLE IF EXISTS {}'.format(table_name))
+            cursor.execute('CREATE TABLE {} ({})'.format(table_name, fields))
+            all_time_stats = csv.reader(file)
+            for line in all_time_stats:
+                name = line[0]
+                if name in playerDictionary:
+                    value_command = 'INSERT INTO {} VALUES ("{}", "{}"'.format(table_name, playerDictionary[name], name)
+                for values in line[1:]:
+                    if category == "G":
+                        value_command += ', "{}"'.format(values)
+                        break
+                    value_command += ', "{}"'.format(values)
+                value_command += ')'
+                cursor.execute(value_command)
 
 
 def getCareerStatsForPlayersDictionary(filename):
@@ -401,14 +406,14 @@ def main():
     # All Time Batting Leaders Table
     createTable(cursor, all_time_batting_fields, 'AllTimeBatting')
     all_time_batting_dirs = sorted(getDataDirectories('battingstats/careerleaders/'))
-    all_time_batting = getAllTimeLeadersDictionary(all_time_batting_dirs, player_names_dict)
-    loadAllTimeLeaders(cursor, all_time_batting, 'AllTimeBatting')
+    batting_string = "Batting"
+    loadAllTimeLeaders(all_time_batting_dirs, player_names_dict, batting_string, cursor)
 
     # All Time Pitching Leaders Table
     all_time_pitching_dirs = sorted(getDataDirectories('pitchingstats/careerleaders/'))
     createTable(cursor, all_time_pitching_fields, 'AllTimePitching')
-    all_time_pitching = getAllTimeLeadersDictionary(all_time_pitching_dirs, player_names_dict)
-    loadAllTimeLeaders(cursor, all_time_pitching, 'AllTimePitching')
+    pitching_string = "Pitching"
+    loadAllTimeLeaders(all_time_pitching_dirs, player_names_dict, pitching_string, cursor)
 
     # Career Batting Stats for All Players Table
     # webscrapeCareerStatsForEachPlayer(player_names_dict)
