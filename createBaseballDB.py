@@ -2,6 +2,8 @@ from dotenv import load_dotenv
 import mysql.connector, os, csv
 import webscrapeHallOfFame, webscrapeCareerLeaders, webscrapeTopIndividualPerf, webscrapePlayerCareerStats
 from datetime import datetime
+from dateutil import relativedelta
+
 
 
 def connect_to_SQL():
@@ -36,10 +38,11 @@ def loadHOFTable(cursor, hall_of_fame_dict, table_name):
 
 def loadPlayerBiosTable(cursor, bios_dict, table_name):
     for player in bios_dict:
-        debut_date, final_game, bats, throws = bios_dict[player]
+        debut_date, final_game, bats, throws, career_length, excess_months, birth_state, birth_country = bios_dict[player]
         cursor.execute(
-            'INSERT INTO {} VALUES ("{}", "{}", "{}", "{}","{}")'.format(table_name, player,
-                                                                         debut_date, final_game, bats, throws))
+            'INSERT INTO {} VALUES ("{}", "{}", "{}", "{}","{}", {},{}, "{}", "{}")'.format(table_name, player,
+                                                                             debut_date, final_game, bats, throws,
+                                                                             career_length, excess_months, birth_state, birth_country))
 
 
 def loadAllTimeLeaders(cursor, all_time_leader_stats, table_name):
@@ -66,7 +69,11 @@ def createDBFields():
         'debutDate': 'DATE',
         'finalGameDate': 'DATE',
         'bats': 'CHAR(1)',
-        'throws': 'CHAR(1)'
+        'throws': 'CHAR(1)',
+        'CareerLength_Years': 'INT',
+        'MonthsExtra':'INT',
+        'birthState': 'VARCHAR(100)',
+        'birthCountry':'VARCHAR(100)'
 
     }
     hall_of_fame_fields = {
@@ -185,6 +192,11 @@ def createDBFields():
         'RunSupport': 'FLOAT',
         'PW': 'FLOAT'
     }
+    single_game_batting = {
+        'playerID': 'VARCHAR(100)',
+        'CaughtStealing': 'INT',
+        'ConsecutiveGameHitStreaks': ''
+    }
 
     return name_fields, player_bio_fields, hall_of_fame_fields, all_time_batting, all_time_pitching, career_batting_stats, career_pitching_stats
 
@@ -235,13 +247,14 @@ def getDataDirectories(folder_name):
 
 def convertDate(date):
     format_string = "%m/%d/%Y"
+
     try:
         d = datetime.strptime(date, format_string)
     except ValueError:
         # if there is no date we return 0000-01-01 to denote no date
-        return '0000-01-01'
-    output_date = "%Y-%m-%d"
-    return d.strftime(output_date)
+        return '0000-01-01', 0
+
+    return d, d.year
 
 
 def getPlayerNamesDictionary(filename):
@@ -263,19 +276,38 @@ def getPlayerBiosDictionary(filename):
         headers = [header.strip() for header in file.readline().split(',')]
         bats_index = headers.index('BATS')
         throws_index = headers.index('THROWS')
+        birth_state_index = headers.index('BIRTH STATE')
+        birth_country_index = headers.index('BIRTH COUNTRY')
+
         debut_date_index = headers.index('PLAY DEBUT')
         final_game_index = headers.index('PLAY LASTGAME')
         player_info = csv.reader(file)
         for line in player_info:
             line = [element.strip('"') for element in line]
             playerID, debut_date, final_game, bats, throws = line[0], line[debut_date_index], line[final_game_index], \
-                                                             line[bats_index], line[throws_index],
-            debut_date, final_game = convertDate(debut_date), convertDate(final_game)
-            playerBioDictionary[playerID] = [debut_date, final_game, bats, throws]
+                                                             line[bats_index], line[throws_index]
+
+            birth_state, birth_country = line[birth_state_index], line[birth_country_index]
+
+            """New Column for Career Length in Years"""
+            debut_date, debut_date_year = convertDate(debut_date)
+            final_game, final_game_year = convertDate(final_game)
+
+            career_length_in_years = final_game_year - debut_date_year
+            if debut_date!= '0000-01-01' and final_game!= '0000-01-01':
+                date_diff = relativedelta.relativedelta(final_game, debut_date)
+                years, months, days = date_diff.years, date_diff.months, date_diff.days
+                # if months is greater than or equal to one we want to include this as a year of playing since they at least started the season
+                if months >=1:
+                    career_length_in_years+=1
+                output_format_date = "%Y-%m-%d"
+                debut_date_str, final_game_str = datetime.strftime(debut_date, output_format_date), datetime.strftime(final_game, output_format_date)
+
+            playerBioDictionary[playerID] = [debut_date_str, final_game_str, bats, throws, career_length_in_years, months, birth_state, birth_country]
     return playerBioDictionary
 
 
-def getHallOfFamePlayersDictionary(filename, playerNameDictionary):
+def getHallOfFamePlayersDictionary(filename, playerNameDictionary, ):
     hall_of_fame_dictionary = {}
     with open(filename) as file:
         file.readline()
@@ -323,6 +355,26 @@ def getCareerStatsForPlayersDictionary(filename):
     return career_stats_dict
 
 
+def addColumns(cursor, column, datatype, tbl_name, player_bio_dict, career_stats_dict):
+    cursor.execute(f"ALTER TABLE {tbl_name} ADD {column} {datatype}")
+    cursor.execute(f"ALTER TABLE {tbl_name} ADD careerLength INT")
+    for player in player_bio_dict:
+        try:
+            games = career_stats_dict[player][0]
+            career_length = player_bio_dict[player][4]
+            if float(career_length) == 0:
+                cursor.execute(f"UPDATE {tbl_name} SET {column} = 0 WHERE playerID ='{player}'")
+                cursor.execute(f"UPDATE {tbl_name} SET careerLength = 0 WHERE playerID ='{player}'")
+                continue
+            games_per_year = float(games) / float(career_length)
+            cursor.execute(f"UPDATE {tbl_name} SET {column} = {round(games_per_year, 2)} WHERE PlayerID ='{player}'")
+            cursor.execute(f"UPDATE {tbl_name} SET careerLength = {career_length} WHERE PlayerID ='{player}'")
+
+            # UPDATE table_name SET column1 = value1, column2 = value2, ...WHERE condition;
+        except KeyError:
+            continue
+
+
 def main():
     # loadBaseballData()
 
@@ -368,6 +420,10 @@ def main():
     createTable(cursor, career_pitching_stats_fields, 'CareerPitchingStats')
     career_pitching_stats = getCareerStatsForPlayersDictionary('playerinformation/pitching_stats.csv')
     loadCareerStatsTables(cursor, career_pitching_stats, 'CareerPitchingStats')
+
+    addColumns(cursor, 'AVGGamesPerYear', 'FLOAT', 'CareerBattingStats', player_bio_dict, career_batting_stats)
+    addColumns(cursor, 'AVGGamesPerYear', 'FLOAT', 'CareerPitchingStats', player_bio_dict, career_pitching_stats)
+
     conn.commit()
 
 
