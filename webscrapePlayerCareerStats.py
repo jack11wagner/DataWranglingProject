@@ -5,7 +5,7 @@ from ratelimit import limits, sleep_and_retry
 
 
 @sleep_and_retry
-@limits(calls=7, period=60)
+@limits(calls=10, period=60)
 def webscrapeCareerStats(name, playerNameDictionary, batting_file, pitching_file):
     batters_list = []
     pitchers_list = []

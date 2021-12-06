@@ -208,9 +208,9 @@ def webscrapeCareerStatsForEachPlayer(playerNameDictionary):
     Opens batting/pitching files for adding career statistics
     This function calls our separate webscrape file which goes to each individual players url and scrapes either their pitching record, fielding record or both
     Any errors in formatting such as players missing fields or players that did not have certain stats were skipped over in the webscraping process
-    We made sure not to abuse the webscraping of retrosheet by making sure only making calls out to the server 7 times per minute.
+    We made sure not to abuse the webscraping of retrosheet by making sure only making calls out to the server 10 times per minute.
 
-    I ran this particular function on my raspberry pi and it took roughly 23 hours total to webscrape all of the necessary data
+    I ran this particular function on my raspberry pi and it took roughly 35 hours total to webscrape all of the necessary data
 
     """
     # TODO Create Rate Limiting for Webscraping
