@@ -41,7 +41,7 @@
 - New Columns:
 
     - Column to find length between debut game and last game in playerbios
-    - *** Possibly a column for Win/Loss Ratio ***
+    - Column for Win/Loss Ratio
     - Calculated Player Career Length using datetime library
     - Calculated the average games per year based on each players career length, if they had completed over 6 months in a certain 
 year we decided to round up an additional year
