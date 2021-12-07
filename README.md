@@ -56,6 +56,10 @@ year we decided to round up an additional year
   - Took retrosheet dates and transformed them into proper mysql date format (From YYYY/MM/DD) to (YYYY-MM-DD)
   - Used Date Difference To calculate player Career Lengths in years
 
+
+--- 
+
+
 - Copyright Message:
 
      + The information used here was obtained free of
