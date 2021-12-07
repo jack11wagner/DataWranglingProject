@@ -31,7 +31,7 @@
 - Individual Career Stats:
      
      - Using the various playerIDs we were able to search up player URLs and do webscrapes for their individual career stat lines
-     - Made sure to limit webscraping to 7 players per minute to make sure to not abuse retrosheets web server
+     - Made sure to limit webscraping to 10 players per minute to make sure to not abuse retrosheets web server
      - Wrote player data to batting/pitching csv files
 
 
