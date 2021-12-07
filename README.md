@@ -47,6 +47,7 @@
 year we decided to round up an additional year
     - Aggregation On Birth Places/States seeing different performances from different birthplaces
     - Utilized relative datedelta to calculate career length including number of months included
+    - Aggregation based on when players played - round(((lastgame - firstgame)/2)/10) * 10
 
   
 ---
