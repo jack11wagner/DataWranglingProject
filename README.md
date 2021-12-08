@@ -31,7 +31,7 @@
 - Individual Career Stats:
      
      - Using the various playerIDs we were able to search up player URLs and do webscrapes for their individual career stat lines
-     - Made sure to limit webscraping to 7 players per minute to make sure to not abuse retrosheets web server
+     - Made sure to limit webscraping to 10 players per minute to make sure to not abuse retrosheets web server
      - Wrote player data to batting/pitching csv files
 
 
@@ -41,12 +41,13 @@
 - New Columns:
 
     - Column to find length between debut game and last game in playerbios
-    - *** Possibly a column for Win/Loss Ratio ***
+    - Column for Win/Loss Ratio
     - Calculated Player Career Length using datetime library
     - Calculated the average games per year based on each players career length, if they had completed over 6 months in a certain 
 year we decided to round up an additional year
     - Aggregation On Birth Places/States seeing different performances from different birthplaces
     - Utilized relative datedelta to calculate career length including number of months included
+    - Aggregation based on when players played - round(((lastgame - firstgame)/2)/10) * 10
 
   
 ---
@@ -54,6 +55,10 @@ year we decided to round up an additional year
 - Date Manipulations:
   - Took retrosheet dates and transformed them into proper mysql date format (From YYYY/MM/DD) to (YYYY-MM-DD)
   - Used Date Difference To calculate player Career Lengths in years
+
+
+--- 
+
 
 - Copyright Message:
 
