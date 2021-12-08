@@ -5,7 +5,6 @@ from datetime import datetime
 from dateutil import relativedelta
 
 
-
 def connect_to_SQL():
     load_dotenv()
     conn = mysql.connector.connect(user=os.getenv("USERNAME"), password=os.getenv("PASSWORD"),
@@ -38,11 +37,15 @@ def loadHOFTable(cursor, hall_of_fame_dict, table_name):
 
 def loadPlayerBiosTable(cursor, bios_dict, table_name):
     for player in bios_dict:
-        debut_date, final_game, bats, throws, career_length, excess_months, birth_state, birth_country = bios_dict[player]
+        debut_date, final_game, bats, throws, career_length, excess_months, birth_state, birth_country = bios_dict[
+            player]
         cursor.execute(
             'INSERT INTO {} VALUES ("{}", "{}", "{}", "{}","{}", {},{}, "{}", "{}")'.format(table_name, player,
-                                                                             debut_date, final_game, bats, throws,
-                                                                             career_length, excess_months, birth_state, birth_country))
+                                                                                            debut_date, final_game,
+                                                                                            bats, throws,
+                                                                                            career_length,
+                                                                                            excess_months, birth_state,
+                                                                                            birth_country))
 
 
 def loadCareerStatsTables(cursor, career_stats, table_name):
@@ -64,9 +67,9 @@ def createDBFields():
         'bats': 'CHAR(1)',
         'throws': 'CHAR(1)',
         'CareerLength_Years': 'INT',
-        'MonthsExtra':'INT',
+        'MonthsExtra': 'INT',
         'birthState': 'VARCHAR(100)',
-        'birthCountry':'VARCHAR(100)'
+        'birthCountry': 'VARCHAR(100)'
 
     }
     hall_of_fame_fields = {
@@ -163,7 +166,7 @@ def webscrapeCareerStatsForEachPlayer(playerNameDictionary):
     I ran this particular function on my raspberry pi and it took roughly 35 hours total to webscrape all of the necessary data
 
     """
-    # TODO Create Rate Limiting for Webscraping
+    # TODO Better String Handling for Individual Player Career Stat Lines
     batting_file = open('playerinformation/batting_stats.csv', 'a')
     pitching_file = open('playerinformation/pitching_stats.csv', 'a')
     player_dict_len = len(playerNameDictionary.keys())
@@ -176,6 +179,7 @@ def webscrapeCareerStatsForEachPlayer(playerNameDictionary):
             current_index += 1
             print('Current Completion Level: {}/{}'.format(current_index, player_dict_len))
         except ValueError:
+            # Players with invalid career line formats would be skipped, such as not having enough columns for data
             continue
 
 
@@ -237,16 +241,18 @@ def getPlayerBiosDictionary(filename):
             final_game, final_game_year = convertDate(final_game)
 
             career_length_in_years = final_game_year - debut_date_year
-            if debut_date!= '0000-01-01' and final_game!= '0000-01-01':
+            if debut_date != '0000-01-01' and final_game != '0000-01-01':
                 date_diff = relativedelta.relativedelta(final_game, debut_date)
                 years, months, days = date_diff.years, date_diff.months, date_diff.days
                 # if months is greater than or equal to one we want to include this as a year of playing since they at least started the season
-                if months >=1:
-                    career_length_in_years+=1
+                if months >= 1:
+                    career_length_in_years += 1
                 output_format_date = "%Y-%m-%d"
-                debut_date_str, final_game_str = datetime.strftime(debut_date, output_format_date), datetime.strftime(final_game, output_format_date)
+                debut_date_str, final_game_str = datetime.strftime(debut_date, output_format_date), datetime.strftime(
+                    final_game, output_format_date)
 
-            playerBioDictionary[playerID] = [debut_date_str, final_game_str, bats, throws, career_length_in_years, months, birth_state, birth_country]
+            playerBioDictionary[playerID] = [debut_date_str, final_game_str, bats, throws, career_length_in_years,
+                                             months, birth_state, birth_country]
     return playerBioDictionary
 
 
@@ -264,7 +270,6 @@ def getHallOfFamePlayersDictionary(filename, playerNameDictionary, ):
 
 
 def loadAllTimeLeaders(filedirectories, playerDictionary, player_position, cursor):
-
     for filename in filedirectories:
         with open(filename) as file:
             headers = file.readline()
@@ -331,7 +336,7 @@ def addColumns(cursor, column, datatype, tbl_name, player_bio_dict, career_stats
 
 
 def main():
-    # loadBaseballData()
+    # loadBaseballData()  # function calls webscraping py files, will take a little while to complete
 
     cursor, conn = connect_to_SQL()
     createBaseballDB(cursor, "baseballStats_db")
