@@ -73,56 +73,6 @@ def createDBFields():
         'PlayerID': 'VARCHAR(25)',
         'YearOfInduction': 'Year'
     }
-    all_time_batting = {
-        'PlayerID': 'VARCHAR(25)',
-        'AtBats': 'FLOAT',
-        'BFW': 'FLOAT',
-        'Batting_Avg': 'FLOAT',
-        'CaughtStealing': 'FLOAT',
-        'Doubles': 'FLOAT',
-        'Games': 'FLOAT',
-        'GroundedIntoDoublePlays': 'FLOAT',
-        'HitByPitch': 'INT',
-        'Hits': 'Float',
-        'Homeruns': 'INT',
-        'Intentional_Walks': 'INT',
-        'OnBasePercentage': 'FLOAT',
-        'Plate_Apps': 'INT',
-        'RBIs': 'INT',
-        'Runs': 'INT',
-        'SacrificeFlies': 'INT',
-        'SacrificeHits': 'INT',
-        'SluggingPercent': 'FLOAT',
-        'StolenBases': ' INT',
-        'Strikeouts': 'INT',
-        'Triples': 'INT',
-        'Walks': 'INT'
-
-    }
-    all_time_pitching = {
-        'PlayerID': 'VARCHAR(25)',
-        'Balks': 'FLOAT',
-        'CompleteGames': 'FLOAT',
-        'ERA': 'FLOAT',
-        'Earned_Runs': 'INT',
-        'GamesFinished': 'INT',
-        'GamesPitched': 'INT',
-        'GamesStarted': 'INT',
-        'HitByPitch': 'INT',
-        'Hits': 'INT',
-        'Homeruns': 'INT',
-        'InningsPitched': 'INT',
-        'IntentionalWalks': 'FLOAT',
-        'Losses': 'INT',
-        'PW': 'INT',
-        'Runs': 'INT',
-        'Saves': 'INT',
-        'Shutouts': 'INT',
-        'Strikeouts': 'INT',
-        'Walks': ' INT',
-        'WildPitches': 'INT',
-        'Wins': 'INT'
-    }
 
     career_batting_stats = {
         # Career Batting Table Columns
@@ -191,7 +141,7 @@ def createDBFields():
         'ConsecutiveGameHitStreaks': ''
     }
 
-    return name_fields, player_bio_fields, hall_of_fame_fields, all_time_batting, all_time_pitching, career_batting_stats, career_pitching_stats
+    return name_fields, player_bio_fields, hall_of_fame_fields, career_batting_stats, career_pitching_stats
 
 
 def loadBaseballData():
@@ -385,7 +335,7 @@ def main():
 
     cursor, conn = connect_to_SQL()
     createBaseballDB(cursor, "baseballStats_db")
-    name_fields, player_bio_fields, hall_of_fame_fields, all_time_batting_fields, all_time_pitching_fields, \
+    name_fields, player_bio_fields, hall_of_fame_fields, \
     career_batting_stats_fields, career_pitching_stats_fields = createDBFields()
 
     # Player Names Table
@@ -407,7 +357,6 @@ def main():
     print("HallOfFame Table Loaded...")
 
     # All Time Batting Leaders Table
-    createTable(cursor, all_time_batting_fields, 'AllTimeBatting')
     all_time_batting_dirs = sorted(getDataDirectories('battingstats/careerleaders/'))
     batting_string = "Batting"
     loadAllTimeLeaders(all_time_batting_dirs, player_names_dict, batting_string, cursor)
@@ -415,7 +364,6 @@ def main():
 
     # All Time Pitching Leaders Table
     all_time_pitching_dirs = sorted(getDataDirectories('pitchingstats/careerleaders/'))
-    createTable(cursor, all_time_pitching_fields, 'AllTimePitching')
     pitching_string = "Pitching"
     loadAllTimeLeaders(all_time_pitching_dirs, player_names_dict, pitching_string, cursor)
     print("AllTimePitchingLeaders Table Loaded...")
